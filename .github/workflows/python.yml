@@ -3,7 +3,7 @@ name: Run Telegram Session Generator
 on:
   push:
     branches:
-      - main  # 可以根据需要更改为其他分支
+      - main  # 触发工作流的分支，可以根据需要修改
 
 jobs:
   build:
@@ -24,11 +24,13 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install telethon  # 确保安装 telethon 库
+          pip install telethon  # 安装 telethon 库
 
       # 4. 运行 generate_session.py 脚本
       - name: Run generate_session.py
         env:
           API_ID: ${{ secrets.API_ID }}  # 从 GitHub Secrets 获取 API_ID
           API_HASH: ${{ secrets.API_HASH }}  # 从 GitHub Secrets 获取 API_HASH
+          PHONE_NUMBER: ${{ secrets.PHONE_NUMBER }}  # 从 GitHub Secrets 获取 PHONE_NUMBER
+          SMS_CODE: ${{ secrets.SMS_CODE }}  # 从 GitHub Secrets 获取 SMS_CODE
         run: python tools/generate_session.py  # 运行脚本
