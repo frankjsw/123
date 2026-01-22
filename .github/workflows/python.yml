@@ -7,21 +7,29 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest  # 操作系统
+    runs-on: ubuntu-latest
 
     steps:
+      # 第一步：Checkout 仓库代码
       - name: Checkout code
         uses: actions/checkout@v2
 
+      # 第二步：设置 Python 环境
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.x'
+          python-version: '3.10'  # 使用 Python 3.10
 
+      # 第三步：安装项目依赖
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt  # 如果有依赖库
+          pip install -r requirements.txt  # 安装依赖
 
+      # 第四步：列出当前目录，检查文件是否存在
+      - name: List directory
+        run: ls -R  # 递归列出当前目录及子目录的文件
+
+      # 第五步：运行 generate_session.py 脚本
       - name: Run generate_session.py
-        run: python tools/generate_session.py  # 路径是否正确？
+        run: python tools/generate_session.py
