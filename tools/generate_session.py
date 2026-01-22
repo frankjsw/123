@@ -19,9 +19,9 @@ if not API_ID or not API_HASH:
 
 print("正在启动 Telegram 登录... (将要求输入手机号和验证码)")
 
-# 创建客户端
+# 创建 Telegram 客户端
 client = TelegramClient(
-    StringSession(), 
+    StringSession(),  # 使用 StringSession 来存储会话
     int(API_ID), 
     API_HASH
 )
@@ -36,13 +36,13 @@ def code_callback():
     # 从环境变量读取验证码
     return os.getenv("SMS_CODE")  # 例如 "12345"
 
-# 设置手机号和验证码回调
-client.session.set_phone(phone_callback)
-client.session.set_code(code_callback)
+# 使用 Telethon 客户端登录
+async def main():
+    # 模拟手机号输入和验证码输入
+    await client.start(phone=phone_callback, code_callback=code_callback)
 
-with client:
-    # 启动客户端并登录
-    me = client.get_me()
+    # 获取用户信息
+    me = await client.get_me()
     print(f"✅ 登录成功！用户: {me.first_name} {me.last_name or ''}，用户名: @{me.username or 'N/A'}，ID: {me.id}")
 
     # 获取 StringSession
@@ -55,14 +55,17 @@ with client:
     # 生成 Base64 编码
     session_b64 = base64.b64encode(string_session.encode('utf-8')).decode('utf-8')
 
-# 输出结果
-print("=" * 60)
-print("生成的文件:")
-print("=" * 60)
-print("1. telegram.session (SQLite 格式)")
-print("2. session.string (StringSession 格式)")
-print("=" * 60)
-print("环境变量 SESSION_STRING (Base64 编码):")
-print("=" * 60)
-print(session_b64)
-print("=" * 60)
+    # 输出结果
+    print("=" * 60)
+    print("生成的文件:")
+    print("=" * 60)
+    print("1. telegram.session (SQLite 格式)")
+    print("2. session.string (StringSession 格式)")
+    print("=" * 60)
+    print("环境变量 SESSION_STRING (Base64 编码):")
+    print("=" * 60)
+    print(session_b64)
+    print("=" * 60)
+
+# 执行 Telegram 登录
+client.loop.run_until_complete(main())
