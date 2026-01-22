@@ -3,44 +3,45 @@ import os
 from telethon.sync import TelegramClient
 from telethon.sessions import StringSession
 
-# 使用环境变量获取 API_ID 和 API_HASH
-API_ID = os.getenv("API_ID")
-API_HASH = os.getenv("API_HASH")
-
-# 检查 API_ID 和 API_HASH 是否存在
-if not API_ID or not API_HASH:
-    print("错误: API_ID 和 API_HASH 环境变量未设置，请检查配置。")#123
-    exit(1)
-
 print("=" * 60)
 print("Telegram Session 生成工具")
 print("=" * 60)
 print()
 
-# 使用 TelegramClient 来创建会话
-# 客户端启动时，模拟手机号输入，且自动处理验证码
+# 从环境变量获取 API_ID 和 API_HASH
+API_ID = os.getenv("API_ID")
+API_HASH = os.getenv("API_HASH")
+
+# 如果没有获取到值，提示错误并退出
+if not API_ID or not API_HASH:
+    print("错误: API_ID 和 API_HASH 环境变量未设置，请检查配置。")
+    exit(1)
+
+print("正在启动 Telegram 登录... (将要求输入手机号和验证码)")
+
+# 创建客户端
 client = TelegramClient(
     StringSession(), 
     int(API_ID), 
     API_HASH
 )
 
-# 模拟输入手机号和自动处理验证码
+# 模拟手机号输入的回调
 def phone_callback():
-    # 模拟手机号输入
-    return os.getenv("PHONE_NUMBER")  # 从环境变量读取手机号
+    # 从环境变量读取手机号
+    return os.getenv("PHONE_NUMBER")  # 例如 "+1234567890"
 
+# 自动输入验证码的回调
 def code_callback():
-    # 这里可以集成验证码自动输入逻辑，或者通过某种方式获取验证码
-    # 比如通过短信API获取验证码，或者手动提供（例如通过环境变量）。
-    return os.getenv("SMS_CODE")  # 从环境变量读取验证码
+    # 从环境变量读取验证码
+    return os.getenv("SMS_CODE")  # 例如 "12345"
+
+# 设置手机号和验证码回调
+client.session.set_phone(phone_callback)
+client.session.set_code(code_callback)
 
 with client:
-    # 设置手机号和验证码回调
-    client.session.set_phone(phone_callback)
-    client.session.set_code(code_callback)
-
-    # 启动客户端
+    # 启动客户端并登录
     me = client.get_me()
     print(f"✅ 登录成功！用户: {me.first_name} {me.last_name or ''}，用户名: @{me.username or 'N/A'}，ID: {me.id}")
 
