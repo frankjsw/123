@@ -9,7 +9,7 @@ API_HASH = os.getenv("API_HASH")
 
 # 检查 API_ID 和 API_HASH 是否存在
 if not API_ID or not API_HASH:
-    print("错误: API_ID 和 API_HASH 环境变量未设置，请检查配置。")
+    print("错误: API_ID 和 API_HASH 环境变量未设置，请检查配置。")#123
     exit(1)
 
 print("=" * 60)
